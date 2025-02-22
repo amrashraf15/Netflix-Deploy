@@ -2,17 +2,22 @@ import { prisma } from "@/lib/prismadb";
 import { serverAuth } from "@/lib/ServerAuth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { movieId: string } }) {
+interface Context {
+  params: { movieId?: string };
+}
+
+export async function GET(req: NextRequest, context: Context) {
   try {
     await serverAuth();
 
-    // Ensure movieId exists and is a valid string
-    if (!params.movieId) {
+    const { movieId } = context.params;
+
+    if (!movieId) {
       return NextResponse.json({ error: "Movie ID is required" }, { status: 400 });
     }
 
     const movie = await prisma.movie.findUnique({
-      where: { id: params.movieId },
+      where: { id: movieId },
     });
 
     if (!movie) {
@@ -25,5 +30,6 @@ export async function GET(req: NextRequest, { params }: { params: { movieId: str
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
 
 
