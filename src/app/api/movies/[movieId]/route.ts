@@ -4,12 +4,12 @@ import { serverAuth } from "@/lib/ServerAuth";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { movieId: string } } // Removed the optional '?'
+  { params }: { params: { movieId: string } }
 ) {
   try {
     await serverAuth();
 
-    const { movieId } = params; // Destructure movieId directly
+    const movieId = params.movieId; // Access movieId directly
 
     if (!movieId) {
       return NextResponse.json({ error: "Movie ID is required" }, { status: 400 });
